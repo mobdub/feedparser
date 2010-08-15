@@ -75,6 +75,14 @@
 
 - (void)rss_pubDate:(NSString *)textValue attributes:(NSDictionary *)attributes parser:(NSXMLParser *)parser {
 	NSDate *date = [NSDate dateWithRFC822:textValue];
+	if (date == nil)
+	{
+		// Check another common date format to see if this will work.
+		NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"MM/dd/yy hh:mm:ss a"];
+		date = [dateFormatter dateFromString:textValue];
+		[dateFormatter release];
+	}
 	self.pubDate = date;
 	if (date == nil) [self abortParsing:parser];
 }
